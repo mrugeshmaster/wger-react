@@ -124,13 +124,17 @@ export function HHMMToDateTime(time: string | null) {
  */
 export function calculatePastDate(filter: FilterType, currentDate: Date = new Date()): string | undefined {
 
-    // Dictionary for filters
-    const filterMap: Record<FilterType, (() => void) | undefined> = {
+    // year-YYYY filters are handled via the ?year= API param, not date__gte
+    if (filter.startsWith('year-')) {
+        return undefined;
+    }
+
+    // Dictionary for time-window filters
+    const filterMap: Partial<Record<FilterType, () => void>> = {
         lastWeek: () => currentDate.setDate(currentDate.getDate() - 7),
         lastMonth: () => currentDate.setMonth(currentDate.getMonth() - 1),
         lastHalfYear: () => currentDate.setMonth(currentDate.getMonth() - 6),
         lastYear: () => currentDate.setFullYear(currentDate.getFullYear() - 1),
-        '': undefined
     };
 
     // Execute the corresponding function for the filter

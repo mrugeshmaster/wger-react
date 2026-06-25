@@ -13,11 +13,20 @@ export const WEIGHT_PATH = 'weightentry';
  */
 export const getWeights = async (filter: FilterType = ''): Promise<WeightEntry[]> => {
 
-
     const date__gte = calculatePastDate(filter);
 
+    // year-YYYY filters use the backend's ?year= query param instead of date__gte
+    const yearMatch = filter.match(/^year-(\d{4})$/);
+    const year = yearMatch ? parseInt(yearMatch[1]) : undefined;
 
-    const url = makeUrl(WEIGHT_PATH, { query: { ordering: '-date', limit: 900, ...(date__gte && { date__gte }) } });
+    const url = makeUrl(WEIGHT_PATH, {
+        query: {
+            ordering: '-date',
+            limit: 900,
+            ...(date__gte && { date__gte }),
+            ...(year && { year }),
+        }
+    });
     const { data: receivedWeights } = await axios.get<ResponseType<ApiBodyWeightType>>(url, {
         headers: makeHeader(),
     });
