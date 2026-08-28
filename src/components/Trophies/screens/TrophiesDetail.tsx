@@ -1,8 +1,9 @@
-import { Card, CardContent, CardMedia, LinearProgress, LinearProgressProps, Typography } from "@mui/material";
+import { Card, CardContent, CardMedia, Chip, LinearProgress, LinearProgressProps, Typography } from "@mui/material";
 import Box from "@mui/system/Box";
 import Grid from "@mui/system/Grid";
 import { LoadingPlaceholder } from "@/core/ui/LoadingWidget/LoadingWidget";
 import { WgerContainerFullWidth } from "@/core/ui/Widgets/Container";
+import { TROPHY_TYPE_LABEL, trophyType } from "@/components/Trophies/models/trophy";
 import { UserTrophyProgression } from "@/components/Trophies/models/userTrophyProgression";
 import { useUserTrophyProgressionQuery } from "@/components/Trophies/queries/trophies";
 import React from "react";
@@ -31,6 +32,11 @@ export const TrophiesDetail = () => {
 
 
 function TrophyProgressCard(props: { trophyProgression: UserTrophyProgression }) {
+    const [tRaw] = useTranslation();
+    // Cast t to a looser signature so the type label can be looked up dynamically
+    const t = tRaw as unknown as (key: string) => string;
+    const typeLabel = TROPHY_TYPE_LABEL[props.trophyProgression.trophy.type as trophyType];
+
     return <Card sx={{ height: "100%" }}>
         <CardMedia
             sx={{
@@ -49,6 +55,10 @@ function TrophyProgressCard(props: { trophyProgression: UserTrophyProgression })
             <Typography gutterBottom variant="h6" component="div" sx={{ textAlign: "center" }}>
                 {props.trophyProgression.trophy.name}
             </Typography>
+
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 1 }}>
+                <Chip size="small" label={t(typeLabel)} />
+            </Box>
 
             <Box sx={{ mb: 2, mt: 0 }}>
                 {(props.trophyProgression.trophy.isProgressive && !props.trophyProgression.isEarned) &&
