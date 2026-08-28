@@ -1,0 +1,95 @@
+name: Skyramp Testbot
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      wger_ref:
+        description: 'Git ref (branch, tag, or SHA) of mrugeshmaster/wger to analyze. Defaults to its default branch.'
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.event.issue.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' && github.actor != 'skyramp-testbot[bot]' }}
+
+jobs:
+  testbot:
+    # Only run for pull_request events or issue_comment on PRs mentioning @skyramp-testbot
+    if: >-
+      github.event_name == 'pull_request' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && contains(github.event.comment.body, '@skyramp-testbot') && github.event.comment.user.login != 'skyramp-testbot[bot]')
+    runs-on: 'self-hosted'
+    permissions:
+      contents: write
+      pull-requests: write
+      checks: write
+
+    steps:
+      - name: Generate GitHub App Token
+        id: skyramp-testbot-app-token
+        uses: actions/create-github-app-token@d72941d797fd3113feb6b93fd0dec494b13a2547 # v1
+        with:
+          app-id: ${{ secrets.SKYRAMP_TESTBOT_APP_ID }}
+          private-key: ${{ secrets.SKYRAMP_TESTBOT_APP_PRIVATE_KEY }}
+          repositories: wger-react,wger
+
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          token: ${{ steps.skyramp-testbot-app-token.outputs.token }}
+          persist-credentials: false
+
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        id: skyramp-checkout-wger
+        continue-on-error: true
+        with:
+          repository: mrugeshmaster/wger
+          path: wger
+          fetch-depth: 0
+          ref: ${{ inputs['wger_ref'] || github.head_ref || github.ref_name }}
+          token: ${{ steps.skyramp-testbot-app-token.outputs.token }}
+          persist-credentials: false
+
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        if: steps['skyramp-checkout-wger'].outcome == 'failure'
+        with:
+          repository: mrugeshmaster/wger
+          path: wger
+          fetch-depth: 0
+          token: ${{ steps.skyramp-testbot-app-token.outputs.token }}
+          persist-credentials: false
+
+      - name: Build wger server image
+        run: |
+          podman build \
+            -f wger/extras/docker/production/Dockerfile \
+            -t wger/server:testbot \
+            wger
+
+      - uses: skyramp/testbot@56fac3cc7b777cd08598ed7a7586f8d9733f3507 # v0.11.11
+        env:
+          SKYRAMP_FEATURE_UTILS_REUSE: '1'
+          SKYRAMP_FEATURE_POM_REUSE: '1'
+        with:
+          skyrampLicenseFile: ${{ secrets.SKYRAMP_LICENSE_FILE }}
+          anthropicApiKey: ${{ secrets.SKYRAMP_TESTBOT_API_KEY }}
+          githubToken: ${{ steps.skyramp-testbot-app-token.outputs.token }}
+          githubAppId: ${{ secrets.SKYRAMP_TESTBOT_APP_ID }}
+          githubAppPrivateKey: ${{ secrets.SKYRAMP_TESTBOT_APP_PRIVATE_KEY }}
+          sutSetupMode: 'none'
+          sutSourceWorkflowFile: '.github/workflows/ci.yml'
+          skyrampMcpVersion: 'next'
+          relatedRepoPaths: |
+            ./wger
+          targetSetupCommand: 'docker compose -f .skyramp/sut/docker-compose.testbot.yml --project-directory . up -d --build'
+          targetReadyCheckCommand: 'curl -sf http://localhost:8000/api/v2/language/ -o /dev/null && curl -sf http://localhost:3000/ -o /dev/null'
+          targetReadyCheckDiagnosticsCommand: 'docker compose -f .skyramp/sut/docker-compose.testbot.yml --project-directory . ps && docker compose -f .skyramp/sut/docker-compose.testbot.yml --project-directory . logs --tail=50'
+          targetReadyCheckTimeout: '1800'
+          targetTeardownCommand: 'docker compose -f .skyramp/sut/docker-compose.testbot.yml --project-directory . down -v'
+          authTokenCommand: 'bash .skyramp/sut/get-auth-token.sh'
+          uiCredentials: 'admin:adminadmin'
