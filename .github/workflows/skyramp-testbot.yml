@@ -65,7 +65,10 @@ jobs:
           token: ${{ steps.skyramp-testbot-app-token.outputs.token }}
           persist-credentials: false
 
-      - uses: skyramp/testbot@3d8f06f7223f2a7c187e4f3f3ed2b2e074770e8e # v0.11.10
+      - uses: skyramp/testbot@56fac3cc7b777cd08598ed7a7586f8d9733f3507 # v0.11.11
+        env:
+          SKYRAMP_FEATURE_UTILS_REUSE: '1'
+          SKYRAMP_FEATURE_POM_REUSE: '1'
         with:
           skyrampLicenseFile: ${{ secrets.SKYRAMP_LICENSE_FILE }}
           anthropicApiKey: ${{ secrets.SKYRAMP_TESTBOT_API_KEY }}
@@ -75,5 +78,6 @@ jobs:
           workingDirectory: 'wger-react'
           sutSetupMode: 'adapt_workflow'
           sutSourceWorkflowFile: '.github/workflows/ci.yml'
+          skyrampMcpVersion: 'next'
           relatedRepoPaths: |
             ./wger
