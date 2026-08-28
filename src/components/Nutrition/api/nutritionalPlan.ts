@@ -12,9 +12,20 @@ export type NutritionalPlanOptions = {
     filtersetQueryLogs?: object,
 }
 
-export const getNutritionalPlansSparse = async (): Promise<NutritionalPlan[]> => {
+export type NutritionalPlanFilter = {
+    onlyLogging?: boolean,
+}
+
+export const getNutritionalPlansSparse = async (
+    filter?: NutritionalPlanFilter
+): Promise<NutritionalPlan[]> => {
+    const query = filter?.onlyLogging === undefined
+        ? {}
+        // eslint-disable-next-line camelcase
+        : { only_logging: filter.onlyLogging.toString() };
+
     const { data: receivedPlans } = await axios.get<ResponseType<ApiNutritionalPlanType>>(
-        makeUrl(API_NUTRITIONAL_PLAN_PATH),
+        makeUrl(API_NUTRITIONAL_PLAN_PATH, { query: query }),
         { headers: makeHeader() },
     );
     return receivedPlans.results.map((plan) => nutritionalPlanAdapter.fromJson(plan));
