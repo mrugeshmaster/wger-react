@@ -1,0 +1,46 @@
+# Skyramp Workspace Configuration
+workspace:
+  repoName: mrugeshmaster/wger-react
+  repoUrl: https://github.com/mrugeshmaster/wger-react
+metadata:
+  schemaVersion: v1
+  executorVersion: v1.3.40
+  createdAt: "2026-08-28T22:01:39.600Z"
+  updatedAt: "2026-08-28T22:07:57.354Z"
+services:
+  - serviceName: wger-react-frontend
+    language: typescript
+    framework: vitest
+    testDirectory: tests/skyramp
+    api:
+      authType: none
+      authHeader: ""
+      baseUrl: http://localhost:3000
+    runtimeDetails:
+      serverStartCommand: docker compose -f .skyramp/sut/docker-compose.testbot.yml --project-directory . up -d --build
+      serverStopCommand: docker compose -f .skyramp/sut/docker-compose.testbot.yml --project-directory . down -v
+      runtime: docker
+      dockerNetwork: wger-react_default
+      testSuites:
+        - framework: vitest
+          testRunCommand: bash .skyramp/sut/run-vitest.sh
+          pathGlobs:
+            - src/**/*.test.{ts,tsx}
+            - src/**/*.spec.{ts,tsx}
+          canaryStatus: proven
+          canaryDetail: 13/13 tests passed via skyramp_run_existing_tests with run-vitest.sh wrapper (in-process, no SUT needed).
+  - serviceName: wger-backend
+    repository: mrugeshmaster/wger
+    language: python
+    framework: pytest
+    testDirectory: tests/skyramp
+    api:
+      schemaPath: http://localhost:8000/api/v2/schema
+      authType: token
+      authHeader: Authorization
+      baseUrl: http://localhost:8000/api/v2
+    runtimeDetails:
+      serverStartCommand: docker compose -f .skyramp/sut/docker-compose.testbot.yml --project-directory . up -d
+      serverStopCommand: docker compose -f .skyramp/sut/docker-compose.testbot.yml --project-directory . down -v
+      runtime: docker
+      dockerNetwork: wger_default
