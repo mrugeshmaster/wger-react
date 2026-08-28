@@ -33,7 +33,8 @@
     "end": "End",
     "comment": "Comment",
     "trophies": {
-        "trophies": "Trophies"
+        "trophies": "Trophies",
+        "earnedOfTotal": "{{earned}} of {{total}} trophies earned"
     },
     "licenses": {
         "authors": "Author(s)",

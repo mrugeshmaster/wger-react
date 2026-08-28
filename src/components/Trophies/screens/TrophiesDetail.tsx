@@ -4,7 +4,7 @@ import Grid from "@mui/system/Grid";
 import { LoadingPlaceholder } from "@/core/ui/LoadingWidget/LoadingWidget";
 import { WgerContainerFullWidth } from "@/core/ui/Widgets/Container";
 import { UserTrophyProgression } from "@/components/Trophies/models/userTrophyProgression";
-import { useUserTrophyProgressionQuery } from "@/components/Trophies/queries/trophies";
+import { useTrophySummaryQuery, useUserTrophyProgressionQuery } from "@/components/Trophies/queries/trophies";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -13,12 +13,21 @@ export const TrophiesDetail = () => {
     const [t] = useTranslation();
 
     const planQuery = useUserTrophyProgressionQuery();
+    const summaryQuery = useTrophySummaryQuery();
 
     if (planQuery.isLoading) {
         return <LoadingPlaceholder />;
     }
 
     return <WgerContainerFullWidth title={t('trophies.trophies')}>
+        {summaryQuery.data !== undefined &&
+            <Typography variant="body1" sx={{ mb: 2 }}>
+                {t('trophies.earnedOfTotal', {
+                    earned: summaryQuery.data.earned,
+                    total: summaryQuery.data.total,
+                })}
+            </Typography>
+        }
         <Grid container spacing={2}>
             {(planQuery.data ?? []).map((trophyProgression) => (
                 <Grid size={{ xs: 12, sm: 4, md: 3, lg: 3, xl: 2 }} key={trophyProgression.trophy.uuid}>
