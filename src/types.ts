@@ -1,5 +1,12 @@
 import { ApiIngredientThumbnailType } from "@/components/Nutrition/models/IngredientImageThumbnails";
 
+export interface ApiWeightSummaryType {
+    count: number,
+    min_weight: number | null,
+    max_weight: number | null,
+    avg_weight: number | null,
+}
+
 export interface ApiBodyWeightType {
     id: number,
     date: string,

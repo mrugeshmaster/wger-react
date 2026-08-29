@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { WeightEntry } from "@/components/Weight/models/WeightEntry";
-import { createWeight, deleteWeight, getWeights, updateWeight } from "@/components/Weight/api/weight";
+import { createWeight, deleteWeight, getWeights, getWeightSummary, updateWeight } from "@/components/Weight/api/weight";
 import { QueryKey, } from "@/core/lib/consts";
 import { FilterType } from "../widgets/FilterButtons";
 
@@ -9,6 +9,13 @@ export function useBodyWeightQuery(filter: FilterType = 'lastWeek') {
     return useQuery({
         queryKey: [QueryKey.BODY_WEIGHT, filter],
         queryFn: () => getWeights(filter),
+    });
+}
+
+export function useWeightSummaryQuery(userId?: number) {
+    return useQuery({
+        queryKey: [QueryKey.BODY_WEIGHT_SUMMARY, userId ?? 'self'],
+        queryFn: () => getWeightSummary(userId),
     });
 }
 

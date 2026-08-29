@@ -2,11 +2,12 @@ import { WeightEntry } from "@/components/Weight/models/WeightEntry";
 import { ResponseType } from "@/core/api/responseType";
 import { calculatePastDate } from '@/core/lib/date';
 import { makeHeader, makeUrl } from "@/core/lib/url";
-import { ApiBodyWeightType } from '@/types';
+import { ApiBodyWeightType, ApiWeightSummaryType } from '@/types';
 import axios from 'axios';
 import { FilterType } from '../widgets/FilterButtons';
 
 export const WEIGHT_PATH = 'weightentry';
+export const WEIGHT_SUMMARY_PATH = 'summary';
 
 /*
  * Fetch weight entries based on filter value
@@ -55,4 +56,17 @@ export const createWeight = async (entry: WeightEntry): Promise<WeightEntry> => 
     });
 
     return WeightEntry.fromJson(response.data);
+};
+
+/*
+ * Aggregate statistics for a user's weight entries. Pass a userId to read the
+ * summary of a member the logged in trainer manages; omit it for your own.
+ */
+export const getWeightSummary = async (userId?: number): Promise<ApiWeightSummaryType> => {
+    const url = makeUrl(WEIGHT_PATH, {
+        objectMethod: WEIGHT_SUMMARY_PATH,
+        query: userId !== undefined ? { user: userId } : {},
+    });
+    const { data } = await axios.get<ApiWeightSummaryType>(url, { headers: makeHeader() });
+    return data;
 };

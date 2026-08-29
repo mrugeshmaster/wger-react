@@ -2,7 +2,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
 import { WeightEntry } from "@/components/Weight/models/WeightEntry";
-import { getWeights } from "@/components/Weight/api/weight";
+import { getWeights, getWeightSummary } from "@/components/Weight/api/weight";
 import { getTestQueryClient } from "@/tests/queryClient";
 import { BodyWeight } from "./BodyWeight";
 import { FilterType } from "../widgets/FilterButtons";
@@ -14,6 +14,12 @@ describe("Test BodyWeight component", () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+
+        // The screen also reads the summary; the api module is mocked, so give
+        // it a value or the summary widget reads .count off undefined.
+        (getWeightSummary as Mock).mockResolvedValue({
+            count: 2, min_weight: 80, max_weight: 90, avg_weight: 85,
+        });
     });
 
     // Arrange

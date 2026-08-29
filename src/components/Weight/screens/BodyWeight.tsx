@@ -1,5 +1,6 @@
 import { Box, Stack } from "@mui/material";
 import { useBodyWeightQuery } from "@/components/Weight/queries";
+import { WeightSummary } from "@/components/Weight/widgets/WeightSummary";
 import { WeightTable } from "@/components/Weight/widgets/Table";
 import { WeightChart } from "@/components/Weight/widgets/WeightChart";
 import { AddBodyWeightEntryFab } from "@/components/Weight/widgets/fab";
@@ -29,6 +30,7 @@ export const BodyWeight = () => {
             <FilterButtons currentFilter={filter} onFilterChange={handleFilterChange} />
             {weightyQuery.data!.length === 0 && <OverviewEmpty />}
             {weightyQuery.data!.length !== 0 && <>
+                <WeightSummary />
                 <WeightChart weights={weightyQuery.data!} />
                 <Box sx={{ mt: 4 }} />
                 <WeightTable weights={weightyQuery.data!} />
