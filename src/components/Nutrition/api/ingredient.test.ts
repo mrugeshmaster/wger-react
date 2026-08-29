@@ -128,7 +128,7 @@ describe("Ingredient service tests", () => {
 
         // First call uses the constructed url with id__in
         const firstUrl = (axios.get as Mock).mock.calls[0][0] as string;
-        expect(firstUrl).toContain("/api/v2/ingredientinfo/");
+        expect(firstUrl).toContain("/api/v2/ingredient-info/");
         expect(firstUrl).toContain("id__in=77897%2C77898");
         // Second call follows the `next` cursor verbatim
         expect((axios.get as Mock).mock.calls[1][0]).toBe("https://example.com/page2");
