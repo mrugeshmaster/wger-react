@@ -6,7 +6,7 @@ metadata:
   schemaVersion: v1
   executorVersion: v1.3.40
   createdAt: "2026-08-28T22:01:39.600Z"
-  updatedAt: "2026-08-29T00:39:11.312Z"
+  updatedAt: "2026-08-29T05:44:40.937Z"
 services:
   - serviceName: wger-react-frontend
     language: typescript

@@ -1,0 +1,83 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"detail\": \"This endpoint was renamed to ingredient-info.\"}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Token SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/api/v2/ingredientinfo/",
+    "QueryParams": {},
+    "StatusCode": 410,
+    "Port": 8000,
+    "Timestamp": "2026-08-29T05:50:54.182Z",
+    "Scheme": "http",
+    "scenarioName": "ingredient_info_rename_migration_walk"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"detail\": \"This endpoint was renamed to ingredient-info.\"}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Token SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/api/v2/ingredientinfo/1/",
+    "QueryParams": {},
+    "StatusCode": 410,
+    "Port": 8000,
+    "Timestamp": "2026-08-29T05:50:55.182Z",
+    "Scheme": "http",
+    "scenarioName": "ingredient_info_rename_migration_walk"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"count\": 0, \"next\": null, \"previous\": null, \"results\": []}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Token SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/api/v2/ingredient-info/",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8000,
+    "Timestamp": "2026-08-29T05:50:56.182Z",
+    "Scheme": "http",
+    "scenarioName": "ingredient_info_rename_migration_walk"
+  }
+]
