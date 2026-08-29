@@ -18,6 +18,11 @@ fi
 
 # Descending weights over the last week, so the table's difference and total
 # change columns have something to compute.
+#
+# Noon UTC, not midnight: the API echoes the entry back in the server's local
+# time, and the grid renders that. A midnight timestamp lands on the previous
+# day for any negative offset, so a test that matches a row by its rendered
+# date would look for a day that is not there.
 i=0
 for pair in "8:80.50" "5:81.20" "2:81.90"; do
   days_ago="${pair%%:*}"
@@ -27,7 +32,7 @@ for pair in "8:80.50" "5:81.20" "2:81.90"; do
   curl -sf -X POST "$API/weightentry/" \
     -H "Authorization: Token $TOKEN" \
     -H "Content-Type: application/json" \
-    -d "{\"date\": \"${date}T07:00:00Z\", \"weight\": \"${weight}\", \"notes\": \"\"}" > /dev/null
+    -d "{\"date\": \"${date}T12:00:00Z\", \"weight\": \"${weight}\", \"notes\": \"\"}" > /dev/null
   i=$((i + 1))
 done
 
