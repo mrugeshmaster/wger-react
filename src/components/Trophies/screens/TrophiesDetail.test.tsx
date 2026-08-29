@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import React from 'react';
 import { testUserProgressionTrophies } from "@/tests/trophies/trophiesTestData";
-import { useUserTrophyProgressionQuery } from "@/components/Trophies/queries/trophies";
+import { useTrophySummaryQuery, useUserTrophyProgressionQuery } from "@/components/Trophies/queries/trophies";
+import { TrophySummary } from "@/components/Trophies/models/trophySummary";
 import { TrophiesDetail } from './TrophiesDetail';
 import type { Mock } from 'vitest';
 
@@ -15,6 +16,14 @@ describe('TrophiesDetail', () => {
             isLoading: false,
             isSuccess: true,
             data: testUserProgressionTrophies(),
+        });
+
+        // The whole queries module is mocked, so every hook the screen calls
+        // needs a return value or it reads .data off undefined.
+        (useTrophySummaryQuery as Mock).mockReturnValue({
+            isLoading: false,
+            isSuccess: true,
+            data: new TrophySummary(2, 21),
         });
     });
 
