@@ -26,6 +26,7 @@ describe("Test WeightForm component", () => {
             new Date('2021-12-10 17:00'),
             80,
             1,
+            'after holidays',
         );
 
         // Act
@@ -40,6 +41,8 @@ describe("Test WeightForm component", () => {
         expect(screen.getByDisplayValue('80')).toBeInTheDocument();
         expect(screen.getAllByLabelText('date').length).toBeGreaterThan(0);
         expect(screen.getByLabelText('weight')).toBeInTheDocument();
+        expect(screen.getByLabelText('notes')).toBeInTheDocument();
+        expect(screen.getByDisplayValue('after holidays')).toBeInTheDocument();
         expect(screen.getByText('submit')).toBeInTheDocument();
     });
 
@@ -98,6 +101,7 @@ describe("Test WeightForm component", () => {
         const weightInput = await screen.findByLabelText('weight');
         await user.clear(weightInput);
         await user.type(weightInput, '80');
+        await user.type(await screen.findByLabelText('notes'), 'after holidays');
         fireEvent.click(screen.getByRole('button', { name: 'submit' }));
 
         // Assert - a brand new entry is submitted through the add mutation
@@ -106,6 +110,7 @@ describe("Test WeightForm component", () => {
         });
         const submitted = mutateAddMock.mock.calls[0][0] as WeightEntry;
         expect(Number(submitted.weight)).toBe(80);
+        expect(submitted.notes).toBe('after holidays');
         expect(submitted.id).toBeUndefined();
         expect(submitted.date).toBeInstanceOf(Date);
         expect(mutateEditMock).not.toHaveBeenCalled();
@@ -131,6 +136,33 @@ describe("Test WeightForm component", () => {
 
         // Assert
         await waitFor(() => expect(weightInput).toHaveAttribute('aria-invalid', 'true'));
+        expect(mutateAddMock).not.toHaveBeenCalled();
+    });
+
+    test('A note longer than 100 characters blocks the submission', async () => {
+
+        // Arrange
+        const user = userEvent.setup();
+        const mutateAddMock = vi.fn();
+        (useAddWeightEntryQuery as Mock).mockImplementation(() => ({ mutate: mutateAddMock }));
+
+        // Act
+        render(
+            <QueryClientProvider client={testQueryClient}>
+                <WeightForm />
+            </QueryClientProvider>
+        );
+        const weightInput = await screen.findByLabelText('weight');
+        await user.clear(weightInput);
+        await user.type(weightInput, '80');
+
+        // 101 is the first length the backend rejects - its notes column is CharField(max_length=100)
+        const notesInput = await screen.findByLabelText('notes');
+        await user.type(notesInput, 'x'.repeat(101));
+        fireEvent.click(screen.getByRole('button', { name: 'submit' }));
+
+        // Assert
+        await waitFor(() => expect(notesInput).toHaveAttribute('aria-invalid', 'true'));
         expect(mutateAddMock).not.toHaveBeenCalled();
     });
 

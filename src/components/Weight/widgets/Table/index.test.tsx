@@ -17,14 +17,21 @@ const renderTable = (weights: WeightEntry[]) =>
 describe("Body weight table", () => {
     test('renders rows for all weight entries', async () => {
         const weights: WeightEntry[] = [
-            new WeightEntry(new Date('2021/12/10'), 80, 1),
-            new WeightEntry(new Date('2021/12/20'), 90, 2),
+            new WeightEntry(new Date('2021/12/10'), 80, 1, 'after holidays'),
+            new WeightEntry(new Date('2021/12/20'), 90, 2, 'post-vacation'),
         ];
 
         renderTable(weights);
 
         expect(await screen.findByText('80')).toBeInTheDocument();
         expect(await screen.findByText('90')).toBeInTheDocument();
+
+        expect(screen.getByRole('columnheader', { name: 'notes' })).toBeInTheDocument();
+
+        const notesOf = (id: number) =>
+            (document.querySelector(`[data-id="${id}"] [data-field="notes"]`) as HTMLElement).textContent;
+        expect(notesOf(1)).toBe('after holidays');
+        expect(notesOf(2)).toBe('post-vacation');
     });
 
     test('displays total change column correctly', async () => {
@@ -55,5 +62,17 @@ describe("Body weight table", () => {
         await screen.findByText('80');
         expect(screen.getByRole('menuitem', { name: /edit/i })).toBeInTheDocument();
         expect(screen.getByRole('menuitem', { name: /delete/i })).toBeInTheDocument();
+    });
+
+    test('renders an empty notes cell when an entry has no note', async () => {
+        // Built without the fourth argument, so the entry falls back to the model's '' default
+        const weights: WeightEntry[] = [new WeightEntry(new Date('2021/12/10'), 80, 1)];
+        renderTable(weights);
+
+        await screen.findByText('80');
+
+        const cell = document.querySelector('[data-id="1"] [data-field="notes"]') as HTMLElement;
+        expect(cell).not.toBeNull();
+        expect(cell.textContent).toBe('');
     });
 });
