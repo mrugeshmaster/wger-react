@@ -28,6 +28,11 @@ services:
       args:
         VITE_API_SERVER: http://localhost:8000
     image: wger/react:testbot
+    environment:
+      # Read by Vite at dev-server start; the app has no usable login form, so
+      # without it every API request goes out unauthenticated. start-sut.sh
+      # mints it once the backend is up.
+      - VITE_API_KEY=${VITE_API_KEY:-}
     ports:
       - "3000:3000"
     depends_on:
