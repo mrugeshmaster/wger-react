@@ -43,6 +43,26 @@ describe('TrophiesDetail', () => {
 
         // There should be at least one progressbar in the document
         expect(screen.getAllByRole('progressbar').length).toBeGreaterThanOrEqual(1);
+
+        // The earned count is shown above the grid
+        expect(screen.getByText('trophies.earnedOfTotal')).toBeInTheDocument();
+    });
+
+    test('does not render the earned count when the summary query has no data', () => {
+
+        // Arrange
+        (useTrophySummaryQuery as Mock).mockReturnValue({
+            isLoading: false,
+            isSuccess: false,
+            data: undefined,
+        });
+
+        // Act
+        render(<TrophiesDetail />);
+
+        // Assert: the grid survives a summary request that returned nothing
+        expect(screen.queryByText('trophies.earnedOfTotal')).not.toBeInTheDocument();
+        expect(screen.getByText('Beginner')).toBeInTheDocument();
     });
 
     test('renders an empty overview instead of crashing when the query failed', () => {

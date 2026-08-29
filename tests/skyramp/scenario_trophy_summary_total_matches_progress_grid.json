@@ -1,0 +1,56 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"earned\": 0, \"total\": 20}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Token SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/api/v2/trophy/summary/",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8000,
+    "Timestamp": "2026-08-29T02:56:45.418Z",
+    "Scheme": "http",
+    "scenarioName": "trophy_summary_total_matches_progress_grid"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "[{\"trophy\": {\"id\": 1, \"name\": \"Beginner\", \"is_hidden\": false, \"is_repeatable\": false}, \"is_earned\": false, \"earned_at\": null, \"progress\": 0, \"current_value\": 0, \"target_value\": 1, \"progress_display\": \"0 / 1 workouts\"}]",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Token SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/api/v2/trophy/progress/",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8000,
+    "Timestamp": "2026-08-29T02:56:46.418Z",
+    "Scheme": "http",
+    "scenarioName": "trophy_summary_total_matches_progress_grid"
+  }
+]

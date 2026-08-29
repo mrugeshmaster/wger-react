@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Trophy } from "@/components/Trophies/models/trophy";
-import { getTrophies } from "@/components/Trophies/api/trophies";
+import { getTrophies, getTrophySummary } from "@/components/Trophies/api/trophies";
+import { TrophySummary } from "@/components/Trophies/models/trophySummary";
 import { responseTrophiesPage1, responseTrophiesPage2 } from "@/tests/trophies/trophiesTestData";
 import type { Mock } from "vitest";
 
@@ -39,5 +40,24 @@ describe("Trophies service tests", () => {
         const result = await getTrophies();
 
         expect(result).toEqual([]);
+    });
+
+    test("getTrophySummary hits /trophy/summary/ and maps the earned and total counts", async () => {
+        (axios.get as Mock).mockResolvedValue({ data: { earned: 3, total: 12 } });
+
+        const result = await getTrophySummary();
+
+        // The summary action sits under the resource, not at the list route and
+        // not at a detail route — makeUrl appends objectMethod after the path
+        const url = (axios.get as Mock).mock.calls[0][0] as string;
+        expect(url).toMatch(/\/api\/v2\/trophy\/summary\/$/);
+
+        // The response is mapped onto the model, not returned raw
+        expect(result).toBeInstanceOf(TrophySummary);
+
+        // The constructor is TrophySummary(earned, total) — swapping them is the
+        // obvious regression, so pin each count to its own field
+        expect(result.earned).toBe(3);
+        expect(result.total).toBe(12);
     });
 });
