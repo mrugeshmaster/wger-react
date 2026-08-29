@@ -94,4 +94,25 @@ describe("Test BodyWeight component", () => {
         // Assert
         expect(await screen.findByText('nothingHereYet')).toBeInTheDocument();
     });
+
+    test('renders the weight summary above the chart', async () => {
+
+        // Arrange
+        (getWeights as Mock).mockImplementation(() => Promise.resolve(weightData));
+
+        // Act
+        renderComponent();
+
+        /*
+         * The labels are the i18n keys, not the English strings: this suite renders
+         * untranslated keys, as the sibling tests asserting 'nothingHereYet' show.
+         */
+        expect(await screen.findByText('entries')).toBeInTheDocument();
+        expect(screen.getByText('average')).toBeInTheDocument();
+        expect(screen.getByText('minimum')).toBeInTheDocument();
+        expect(screen.getByText('maximum')).toBeInTheDocument();
+
+        // avg_weight is unique to the summary; 80 and 90 also appear in the table rows
+        expect(screen.getByText('85')).toBeInTheDocument();
+    });
 });
