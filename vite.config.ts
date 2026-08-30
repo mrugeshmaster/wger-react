@@ -22,6 +22,10 @@ export default defineConfig(({ mode }) => {
         server: {
             open: true,
             port: 3000,
+
+            // The test executor runs in a container and reaches the dev server
+            // as host.docker.internal, which Vite rejects by default.
+            allowedHosts: true,
         },
         plugins: [
             react({
