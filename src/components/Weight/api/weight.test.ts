@@ -18,7 +18,8 @@ describe("weight service tests", () => {
             next: null,
             previous: null,
             results: [
-                { id: 1, weight: 80, date: '2021-12-10' },
+                { id: 1, weight: 80, date: '2021-12-10', notes: 'after holidays' },
+                // no notes key: the adapter must default it to an empty string
                 { id: 2, weight: 90, date: '2021-12-20' },
             ]
         };
@@ -29,8 +30,8 @@ describe("weight service tests", () => {
         expect(axios.get).toHaveBeenCalledTimes(1);
 
         expect(result).toStrictEqual([
-            new WeightEntry(new Date('2021-12-10'), 80, 1),
-            new WeightEntry(new Date('2021-12-20'), 90, 2),
+            new WeightEntry(new Date('2021-12-10'), 80, 1, 'after holidays'),
+            new WeightEntry(new Date('2021-12-20'), 90, 2, ''),
         ]);
     });
 
@@ -50,8 +51,8 @@ describe("weight service tests", () => {
     test('PATCH weight entry', async () => {
 
         // Arrange
-        const weightEntry = new WeightEntry(new Date('2021-12-10'), 80, 1);
-        const weightResponse = { data: { id: 1, weight: 80, date: '2021-12-10' } };
+        const weightEntry = new WeightEntry(new Date('2021-12-10'), 80, 1, 'after holidays');
+        const weightResponse = { data: { id: 1, weight: 80, date: '2021-12-10', notes: 'after holidays' } };
 
         // Act
         (axios.patch as Mock).mockImplementation(() => Promise.resolve(weightResponse));
@@ -61,15 +62,15 @@ describe("weight service tests", () => {
         expect(axios.patch).toHaveBeenCalledTimes(1);
         const [url, body] = (axios.patch as Mock).mock.calls[0];
         expect(url).toMatch(/\/api\/v2\/weightentry\/1\/$/);
-        expect(body).toEqual({ date: new Date('2021-12-10').toISOString(), weight: 80, notes: '' });
-        expect(result).toStrictEqual(new WeightEntry(new Date('2021-12-10'), 80, 1));
+        expect(body).toEqual({ date: new Date('2021-12-10').toISOString(), weight: 80, notes: 'after holidays' });
+        expect(result).toStrictEqual(new WeightEntry(new Date('2021-12-10'), 80, 1, 'after holidays'));
     });
 
     test('POST a new weight entry', async () => {
 
         // Arrange
-        const weightEntry = new WeightEntry(new Date('2021-12-10'), 80, 1);
-        const weightResponse = { data: { id: 1, weight: 80, date: '2021-12-10' } };
+        const weightEntry = new WeightEntry(new Date('2021-12-10'), 80, 1, 'back from holidays');
+        const weightResponse = { data: { id: 1, weight: 80, date: '2021-12-10', notes: 'back from holidays' } };
 
         // Act
         (axios.post as Mock).mockImplementation(() => Promise.resolve(weightResponse));
@@ -79,8 +80,8 @@ describe("weight service tests", () => {
         expect(axios.post).toHaveBeenCalledTimes(1);
         const [url, body] = (axios.post as Mock).mock.calls[0];
         expect(url).toMatch(/\/api\/v2\/weightentry\/$/);
-        expect(body).toEqual({ date: new Date('2021-12-10').toISOString(), weight: 80, notes: '' });
-        expect(result).toStrictEqual(new WeightEntry(new Date('2021-12-10'), 80, 1));
+        expect(body).toEqual({ date: new Date('2021-12-10').toISOString(), weight: 80, notes: 'back from holidays' });
+        expect(result).toStrictEqual(new WeightEntry(new Date('2021-12-10'), 80, 1, 'back from holidays'));
     });
 
     test('GET the weight entries with a date filter', async () => {
