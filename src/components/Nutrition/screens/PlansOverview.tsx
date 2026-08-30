@@ -1,18 +1,21 @@
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { Divider, List, ListItem, ListItemButton, ListItemText, Paper, Stack } from "@mui/material";
+import { Divider, FormControlLabel, List, ListItem, ListItemButton, ListItemText, Paper, Stack, Switch } from "@mui/material";
 import { LoadingPlaceholder } from "@/core/ui/LoadingWidget/LoadingWidget";
 import { WgerContainerRightSidebar } from "@/core/ui/Widgets/Container";
 import { OverviewEmpty } from "@/core/ui/Widgets/OverviewEmpty";
 import { NutritionalPlan } from "@/components/Nutrition/models/nutritionalPlan";
 import { useFetchNutritionalPlansQuery } from "@/components/Nutrition/queries";
 import { AddNutritionalPlanFab } from "@/components/Nutrition/widgets/Fab";
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { dateToLocale } from "@/core/lib/date";
 import { makeLink, WgerLink } from "@/core/lib/url";
 
 export const PlansOverview = () => {
-    const plansQuery = useFetchNutritionalPlansQuery();
+    const [onlyLogging, setOnlyLogging] = useState(false);
+    const plansQuery = useFetchNutritionalPlansQuery(
+        onlyLogging ? { onlyLogging: true } : undefined
+    );
     const [t] = useTranslation();
 
 
@@ -21,6 +24,13 @@ export const PlansOverview = () => {
         : <WgerContainerRightSidebar
             title={t("nutrition.plans")}
             mainContent={<Stack spacing={2}>
+                <FormControlLabel
+                    control={<Switch
+                        checked={onlyLogging}
+                        onChange={(event) => setOnlyLogging(event.target.checked)}
+                    />}
+                    label={t('nutrition.onlyLoggingFilter')}
+                />
                 {plansQuery.data?.length === 0 && <OverviewEmpty />}
                 <PlanList plans={plansQuery.data!} />
             </Stack>

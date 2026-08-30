@@ -6,14 +6,15 @@ import {
     editNutritionalPlan,
     getLastNutritionalPlan,
     getNutritionalPlanFull,
-    getNutritionalPlansSparse
+    getNutritionalPlansSparse,
+    NutritionalPlanFilter
 } from "@/components/Nutrition/api/nutritionalPlan";
 import { QueryKey } from "@/core/lib/consts";
 
-export function useFetchNutritionalPlansQuery() {
+export function useFetchNutritionalPlansQuery(filter?: NutritionalPlanFilter) {
     return useQuery({
-        queryKey: [QueryKey.NUTRITIONAL_PLANS],
-        queryFn: () => getNutritionalPlansSparse()
+        queryKey: [QueryKey.NUTRITIONAL_PLANS, JSON.stringify(filter ?? {})],
+        queryFn: () => getNutritionalPlansSparse(filter)
     });
 }
 
