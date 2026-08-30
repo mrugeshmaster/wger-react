@@ -29,6 +29,11 @@ describe('TrophiesDetail', () => {
         expect(screen.getByText('Complete your first workout')).toBeInTheDocument();
         expect(screen.getByText('Maintain a 30-day workout streak')).toBeInTheDocument();
 
+        // Each card shows the category of its trophy. The test i18n setup returns the
+        // key itself, so the chip text is the translation key.
+        expect(screen.getByText('trophies.typeOther')).toBeInTheDocument();
+        expect(screen.getByText('trophies.typeCount')).toBeInTheDocument();
+
         // Progression value for the progressive trophy should be shown
         expect(screen.getByText('4/30')).toBeInTheDocument();
 
