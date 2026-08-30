@@ -379,5 +379,8 @@
     },
     "calendar": "Calendar",
     "entries": "Entries",
+    "average": "Average",
+    "minimum": "Minimum",
+    "maximum": "Maximum",
     "no_entries_for_day": "No entries for this day"
 }

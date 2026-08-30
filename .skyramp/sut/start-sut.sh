@@ -18,4 +18,8 @@ export VITE_API_KEY
 
 bash "$SUT_DIR/seed-weight-entries.sh" "$VITE_API_KEY"
 
+# A second user with entries of their own, so the trainer view of the weight
+# summary (?user=) has someone else's data to read.
+bash "$SUT_DIR/seed-second-user.sh"
+
 $COMPOSE up -d --build frontend
