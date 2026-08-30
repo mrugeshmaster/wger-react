@@ -43,6 +43,9 @@ describe('TrophiesDetail', () => {
 
         // There should be at least one progressbar in the document
         expect(screen.getAllByRole('progressbar').length).toBeGreaterThanOrEqual(1);
+
+        // The summary line above the grid comes from the trophy summary query
+        expect(screen.getByText('trophies.earnedOfTotal')).toBeInTheDocument();
     });
 
     test('renders an empty overview instead of crashing when the query failed', () => {
@@ -78,5 +81,23 @@ describe('TrophiesDetail', () => {
         // Assert
         expect(screen.getByRole('progressbar')).toBeInTheDocument();
         expect(screen.queryByText('trophies.trophies')).not.toBeInTheDocument();
+    });
+
+    test('renders the trophy grid without the summary line when the summary is unavailable', () => {
+
+        // Arrange
+        (useTrophySummaryQuery as Mock).mockReturnValue({
+            isLoading: false,
+            isSuccess: false,
+            isError: true,
+            data: undefined,
+        });
+
+        // Act
+        render(<TrophiesDetail />);
+
+        // Assert
+        expect(screen.queryByText('trophies.earnedOfTotal')).not.toBeInTheDocument();
+        expect(screen.getByText('Beginner')).toBeInTheDocument();
     });
 });
