@@ -78,6 +78,8 @@ describe("Ingredient service tests", () => {
 
         // Assert
         expect(axios.get).toHaveBeenCalledTimes(1);
+        const url = (axios.get as Mock).mock.calls[0][0] as string;
+        expect(url).toContain("/api/v2/ingredient-info/");
         expect(result.id).toEqual(77897);
         expect(result.uuid).toEqual("7b13e612-14e6-424a-9418-4fd366ff3224");
         expect(result.code).toEqual("8801043020756");
@@ -152,6 +154,7 @@ describe("Ingredient service tests", () => {
         });
 
         const url = (axios.get as Mock).mock.calls[0][0] as string;
+        expect(url).toContain("/api/v2/ingredient-info/");
         expect(url).toContain("name__search=yogurt");
         expect(url).toContain(`limit=${API_RESULTS_PAGE_SIZE}`);
         // current_english + non-English language => both codes are queried
