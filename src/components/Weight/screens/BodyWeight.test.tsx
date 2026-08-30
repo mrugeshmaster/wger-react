@@ -18,7 +18,7 @@ describe("Test BodyWeight component", () => {
         // The screen also reads the summary; the api module is mocked, so give
         // it a value or the summary widget reads .count off undefined.
         (getWeightSummary as Mock).mockResolvedValue({
-            count: 2, min_weight: 80, max_weight: 90, avg_weight: 85,
+            count: 2, min_weight: 70.5, max_weight: 95.5, avg_weight: 83,
         });
     });
 
@@ -93,5 +93,23 @@ describe("Test BodyWeight component", () => {
 
         // Assert
         expect(await screen.findByText('nothingHereYet')).toBeInTheDocument();
+    });
+
+    test('renders the weight summary figures above the chart', async () => {
+
+        // Arrange
+        (getWeights as Mock).mockImplementation(() => Promise.resolve(weightData));
+
+        // Act
+        renderComponent();
+
+        // Assert - the strip shows the figures the summary endpoint returned
+        expect(await screen.findByText('70.5')).toBeInTheDocument();
+        expect(await screen.findByText('95.5')).toBeInTheDocument();
+        expect(await screen.findByText('83')).toBeInTheDocument();
+
+        // The screen renders <WeightSummary /> with no userId, so the summary of
+        // the logged in user is requested - not another member's.
+        expect(getWeightSummary).toHaveBeenCalledWith(undefined);
     });
 });
