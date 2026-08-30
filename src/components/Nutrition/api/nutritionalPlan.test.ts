@@ -81,6 +81,12 @@ describe("Nutritional plan service tests", () => {
         const result = await getNutritionalPlansSparse();
         expect(axios.get).toHaveBeenCalledTimes(1);
 
+        // Without a filter argument no only_logging key is sent, so the API
+        // returns every plan
+        const [url] = (axios.get as Mock).mock.calls[0];
+        expect(url).toContain('/api/v2/nutritionplan/');
+        expect(url).not.toContain('only_logging');
+
         expect(result).toStrictEqual([
             new NutritionalPlan({
                 id: PLAN_UUID_A,
@@ -105,6 +111,37 @@ describe("Nutritional plan service tests", () => {
                 onlyLogging: false
             }),
         ]);
+    });
+
+    test('GET plans - sparse forwards the onlyLogging filter as a query parameter', async () => {
+
+        const planResponse = {
+            count: 1,
+            next: null,
+            previous: null,
+            results: [
+                {
+                    "id": 'aaaaaaaa-0000-0000-0000-000000072559',
+                    "creation_date": "2023-05-26",
+                    "start": "2023-06-01",
+                    "end": "2023-06-30",
+                    "description": "first plan",
+                    "only_logging": true,
+                },
+            ]
+        };
+
+        (axios.get as Mock).mockImplementation(() => Promise.resolve({ data: planResponse }));
+
+        const result = await getNutritionalPlansSparse({ onlyLogging: true });
+
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        const [url] = (axios.get as Mock).mock.calls[0];
+        expect(url).toContain('/api/v2/nutritionplan/');
+        expect(url).toContain('only_logging=true');
+
+        expect(result).toHaveLength(1);
+        expect(result[0].onlyLogging).toBe(true);
     });
 
     test('getLastNutritionalPlan returns null when no plans exist', async () => {

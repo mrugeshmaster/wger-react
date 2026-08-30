@@ -6,7 +6,7 @@ metadata:
   schemaVersion: v1
   executorVersion: v1.3.40
   createdAt: "2026-08-28T22:01:39.600Z"
-  updatedAt: "2026-08-29T00:39:11.312Z"
+  updatedAt: "2026-08-30T05:36:40.595Z"
 services:
   - serviceName: wger-react-frontend
     language: typescript
@@ -44,3 +44,15 @@ services:
       serverStopCommand: docker compose -f .skyramp/sut/docker-compose.testbot.yml --project-directory . down -v
       runtime: docker
       dockerNetwork: wger-react_default
+      testSuites:
+        - framework: pytest
+          testRunCommand: uv run ./manage.py test
+          testEnv:
+            DJANGO_SETTINGS_MODULE: settings.ci
+            DJANGO_MEDIA_ROOT: /tmp/wger-test
+          pathGlobs:
+            - wger/**/tests/test_*.py
+          canaryStatus: unproven
+          canaryDetail: >-
+            Django's test runner rejects --json-report (unrecognized argument). Add pytest-django to switch to pytest
+            and unlock file-path selectors.
