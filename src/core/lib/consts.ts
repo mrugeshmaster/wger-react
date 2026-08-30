@@ -70,6 +70,7 @@ export enum QueryKey {
 
     // Trophies
     TROPHIES = 'trophies',
+    TROPHY_SUMMARY = 'trophy-summary',
     USER_TROPHIES = 'user-trophies',
     USER_TROPHY_PROGRESSION = 'user-trophy-progression',
 }
