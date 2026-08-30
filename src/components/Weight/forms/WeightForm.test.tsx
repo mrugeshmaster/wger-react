@@ -26,6 +26,7 @@ describe("Test WeightForm component", () => {
             new Date('2021-12-10 17:00'),
             80,
             1,
+            'after holidays',
         );
 
         // Act
@@ -40,6 +41,8 @@ describe("Test WeightForm component", () => {
         expect(screen.getByDisplayValue('80')).toBeInTheDocument();
         expect(screen.getAllByLabelText('date').length).toBeGreaterThan(0);
         expect(screen.getByLabelText('weight')).toBeInTheDocument();
+        expect(screen.getByLabelText('notes')).toBeInTheDocument();
+        expect(screen.getByDisplayValue('after holidays')).toBeInTheDocument();
         expect(screen.getByText('submit')).toBeInTheDocument();
     });
 
@@ -64,6 +67,9 @@ describe("Test WeightForm component", () => {
         const weightInput = await screen.findByLabelText('weight');
         await user.clear(weightInput);
         await user.type(weightInput, '82');
+        const notesInput = await screen.findByLabelText('notes');
+        await user.clear(notesInput);
+        await user.type(notesInput, 'after holidays');
         const submitButton = screen.getByRole('button', { name: 'submit' });
         fireEvent.click(submitButton);
 
@@ -75,9 +81,11 @@ describe("Test WeightForm component", () => {
         expect(submitted).not.toBe(weightEntry);
         expect(Number(submitted.weight)).toBe(82);
         expect(submitted.id).toBe(1);
+        expect(submitted.notes).toBe('after holidays');
 
         // ...and does not mutate the passed-in entry (it comes from the query cache)
         expect(weightEntry.weight).toBe(80);
+        expect(weightEntry.notes).toBe('');
     });
 
     test('Creating a new weight entry', async () => {
@@ -98,6 +106,7 @@ describe("Test WeightForm component", () => {
         const weightInput = await screen.findByLabelText('weight');
         await user.clear(weightInput);
         await user.type(weightInput, '80');
+        await user.type(await screen.findByLabelText('notes'), 'first entry of the year');
         fireEvent.click(screen.getByRole('button', { name: 'submit' }));
 
         // Assert - a brand new entry is submitted through the add mutation
@@ -108,6 +117,7 @@ describe("Test WeightForm component", () => {
         expect(Number(submitted.weight)).toBe(80);
         expect(submitted.id).toBeUndefined();
         expect(submitted.date).toBeInstanceOf(Date);
+        expect(submitted.notes).toBe('first entry of the year');
         expect(mutateEditMock).not.toHaveBeenCalled();
     });
 
@@ -131,6 +141,33 @@ describe("Test WeightForm component", () => {
 
         // Assert
         await waitFor(() => expect(weightInput).toHaveAttribute('aria-invalid', 'true'));
+        expect(mutateAddMock).not.toHaveBeenCalled();
+    });
+
+    test('A note longer than 100 characters blocks the submission', async () => {
+
+        // Arrange
+        const user = userEvent.setup();
+        const mutateAddMock = vi.fn();
+        (useAddWeightEntryQuery as Mock).mockImplementation(() => ({ mutate: mutateAddMock }));
+
+        // Act
+        render(
+            <QueryClientProvider client={testQueryClient}>
+                <WeightForm />
+            </QueryClientProvider>
+        );
+        const weightInput = await screen.findByLabelText('weight');
+        await user.clear(weightInput);
+        await user.type(weightInput, '80');
+
+        // 101 characters: one over the backend's max_length of 100
+        const notesInput = await screen.findByLabelText('notes');
+        fireEvent.change(notesInput, { target: { value: 'x'.repeat(101) } });
+        fireEvent.click(screen.getByRole('button', { name: 'submit' }));
+
+        // Assert
+        await waitFor(() => expect(notesInput).toHaveAttribute('aria-invalid', 'true'));
         expect(mutateAddMock).not.toHaveBeenCalled();
     });
 

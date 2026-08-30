@@ -17,14 +17,39 @@ const renderTable = (weights: WeightEntry[]) =>
 describe("Body weight table", () => {
     test('renders rows for all weight entries', async () => {
         const weights: WeightEntry[] = [
-            new WeightEntry(new Date('2021/12/10'), 80, 1),
-            new WeightEntry(new Date('2021/12/20'), 90, 2),
+            new WeightEntry(new Date('2021/12/10'), 80, 1, 'after holidays'),
+            new WeightEntry(new Date('2021/12/20'), 90, 2, 'back on the wagon'),
         ];
 
         renderTable(weights);
 
         expect(await screen.findByText('80')).toBeInTheDocument();
         expect(await screen.findByText('90')).toBeInTheDocument();
+
+        // the notes column and each row's note
+        expect(screen.getByText('notes')).toBeInTheDocument();
+        expect(await screen.findByText('after holidays')).toBeInTheDocument();
+        expect(await screen.findByText('back on the wagon')).toBeInTheDocument();
+    });
+
+    test('the notes cell shows the entry note, and is empty when there is none', async () => {
+        const weights: WeightEntry[] = [
+            new WeightEntry(new Date('2021/12/10'), 80, 1, 'after holidays'),
+            // no note given: the WeightEntry constructor defaults it to an empty string
+            new WeightEntry(new Date('2021/12/20'), 90, 2),
+        ];
+
+        renderTable(weights);
+        await screen.findByText('80');
+
+        const expectedNotes: Record<string, string> = { '1': 'after holidays', '2': '' };
+
+        for (const [id, note] of Object.entries(expectedNotes)) {
+            const row = document.querySelector(`[data-id="${id}"]`) as HTMLElement;
+            expect(row).not.toBeNull();
+            const cell = row.querySelector('[data-field="notes"]') as HTMLElement;
+            expect(cell.textContent).toBe(note);
+        }
     });
 
     test('displays total change column correctly', async () => {
