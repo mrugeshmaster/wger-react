@@ -1,0 +1,91 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"count\": 3, \"min_weight\": 80.5, \"max_weight\": 81.9, \"avg_weight\": 81.2}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Token SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/api/v2/weightentry/summary/",
+    "QueryParams": {},
+    "StatusCode": 200,
+    "Port": 8000,
+    "Timestamp": "2026-08-30T06:20:49.239Z",
+    "Scheme": "http",
+    "scenarioName": "weight_summary_user_param_unvalidated"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"count\": 3, \"min_weight\": 70.0, \"max_weight\": 71.1}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Token SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/api/v2/weightentry/summary/",
+    "QueryParams": {
+      "user": [
+        "2"
+      ]
+    },
+    "StatusCode": 200,
+    "Port": 8000,
+    "Timestamp": "2026-08-30T06:20:50.239Z",
+    "Scheme": "http",
+    "scenarioName": "weight_summary_user_param_unvalidated"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Token SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/api/v2/weightentry/summary/",
+    "QueryParams": {
+      "user": [
+        "abc"
+      ]
+    },
+    "StatusCode": 400,
+    "Port": 8000,
+    "Timestamp": "2026-08-30T06:20:51.239Z",
+    "Scheme": "http",
+    "scenarioName": "weight_summary_user_param_unvalidated"
+  }
+]

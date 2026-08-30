@@ -1,6 +1,6 @@
 import axios from "axios";
 import { WeightEntry } from "@/components/Weight/models/WeightEntry";
-import { createWeight, deleteWeight, getWeights, updateWeight } from "./weight";
+import { createWeight, deleteWeight, getWeights, getWeightSummary, updateWeight } from "./weight";
 import type { Mock } from 'vitest';
 
 vi.mock("axios");
@@ -109,6 +109,44 @@ describe("weight service tests", () => {
         // Assert
         const [url] = (axios.get as Mock).mock.calls[0];
         expect(url).not.toContain('date__gte');
+    });
+
+    test('GET the weight summary for another user sends the user query param', async () => {
+
+        // Arrange
+        (axios.get as Mock).mockImplementation(() => Promise.resolve({
+            data: { count: 3, min_weight: 70.0, max_weight: 71.1, avg_weight: 70.5666666666667 }
+        }));
+
+        // Act
+        const result = await getWeightSummary(2);
+
+        // Assert
+        const [url] = (axios.get as Mock).mock.calls[0];
+        expect(url).toContain('/api/v2/weightentry/summary');
+        expect(url).toContain('user=2');
+        expect(result).toEqual({
+            count: 3, min_weight: 70.0, max_weight: 71.1, avg_weight: 70.5666666666667
+        });
+    });
+
+    test('GET the weight summary without a userId sends no user param', async () => {
+
+        // Arrange - the empty entry set, where every aggregate comes back null
+        (axios.get as Mock).mockImplementation(() => Promise.resolve({
+            data: { count: 0, min_weight: null, max_weight: null, avg_weight: null }
+        }));
+
+        // Act
+        const result = await getWeightSummary();
+
+        // Assert
+        const [url] = (axios.get as Mock).mock.calls[0];
+        expect(url).toContain('/api/v2/weightentry/summary');
+        expect(url).not.toContain('user=');
+        expect(result).toEqual({
+            count: 0, min_weight: null, max_weight: null, avg_weight: null
+        });
     });
 
 });
