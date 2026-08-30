@@ -61,7 +61,7 @@ describe("weight service tests", () => {
         expect(axios.patch).toHaveBeenCalledTimes(1);
         const [url, body] = (axios.patch as Mock).mock.calls[0];
         expect(url).toMatch(/\/api\/v2\/weightentry\/1\/$/);
-        expect(body).toEqual({ date: new Date('2021-12-10').toISOString(), weight: 80 });
+        expect(body).toEqual({ date: new Date('2021-12-10').toISOString(), weight: 80, notes: '' });
         expect(result).toStrictEqual(new WeightEntry(new Date('2021-12-10'), 80, 1));
     });
 
@@ -79,7 +79,7 @@ describe("weight service tests", () => {
         expect(axios.post).toHaveBeenCalledTimes(1);
         const [url, body] = (axios.post as Mock).mock.calls[0];
         expect(url).toMatch(/\/api\/v2\/weightentry\/$/);
-        expect(body).toEqual({ date: new Date('2021-12-10').toISOString(), weight: 80 });
+        expect(body).toEqual({ date: new Date('2021-12-10').toISOString(), weight: 80, notes: '' });
         expect(result).toStrictEqual(new WeightEntry(new Date('2021-12-10'), 80, 1));
     });
 

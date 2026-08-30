@@ -34,6 +34,7 @@ const buildRows = (weights: WeightEntry[]): GridRowsProp =>
         id: row.entry.id,
         date: row.entry.date,
         weight: row.entry.weight,
+        notes: row.entry.notes,
         change: +row.change.toFixed(2),
         totalChange: +row.totalChange.toFixed(2),
         days: +row.days.toFixed(1),
@@ -73,7 +74,12 @@ export const WeightTable = ({ weights }: WeightTableProps) => {
 
     const processRowUpdate = (newRow: GridRowModel) => {
         const date = newRow.date instanceof Date ? newRow.date : new Date(newRow.date);
-        editEntryQuery.mutate(new WeightEntry(date, Number(newRow.weight), Number(newRow.id)));
+        editEntryQuery.mutate(new WeightEntry(
+            date,
+            Number(newRow.weight),
+            Number(newRow.id),
+            String(newRow.notes ?? ''),
+        ));
         return newRow;
     };
 
@@ -100,6 +106,13 @@ export const WeightTable = ({ weights }: WeightTableProps) => {
             headerName: t('weight'),
             type: 'number',
             width: 100,
+            editable: true,
+        },
+        {
+            field: 'notes',
+            headerName: t('notes'),
+            type: 'string',
+            width: 200,
             editable: true,
         },
         {

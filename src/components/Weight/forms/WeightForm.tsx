@@ -30,6 +30,9 @@ export const WeightForm = ({ weightEntry, closeFn }: WeightFormProps) => {
             .min(30, 'Min weight is 30 kg')
             .max(300, 'Max weight is 300 kg')
             .required('Weight field is required'),
+        notes: yup
+            .string()
+            .max(100, t('forms.maxLength', { chars: '100' })),
     });
 
     if (weightEntriesQuery.isLoading) {
@@ -41,6 +44,7 @@ export const WeightForm = ({ weightEntry, closeFn }: WeightFormProps) => {
             initialValues={{
                 weight: weightEntry ? weightEntry.weight : 0,
                 date: weightEntry ? weightEntry.date : new Date(),
+                notes: weightEntry ? weightEntry.notes : '',
             }}
             validationSchema={validationSchema}
             onSubmit={async (values) => {
@@ -49,12 +53,14 @@ export const WeightForm = ({ weightEntry, closeFn }: WeightFormProps) => {
                 if (weightEntry) {
                     editWeightQuery.mutate(WeightEntry.clone(
                         weightEntry,
-                        { weight: values.weight, date: values.date }
+                        { weight: values.weight, date: values.date, notes: values.notes }
                     ));
 
                     // Create a new weight entry
                 } else {
-                    addWeightQuery.mutate(new WeightEntry(values.date, values.weight));
+                    addWeightQuery.mutate(
+                        new WeightEntry(values.date, values.weight, undefined, values.notes)
+                    );
                 }
 
                 if (closeFn) {
@@ -89,6 +95,16 @@ export const WeightForm = ({ weightEntry, closeFn }: WeightFormProps) => {
                                 }}
                             />
                         </LocalizationProvider>
+
+                        <TextField
+                            fullWidth
+                            id="notes"
+                            label={t('notes')}
+                            error={formik.touched.notes && Boolean(formik.errors.notes)}
+                            helperText={formik.touched.notes && formik.errors.notes}
+                            {...formik.getFieldProps('notes')}
+                        />
+
                         <Stack direction="row" sx={{ justifyContent: "end", mt: 2 }}>
                             <Button color="primary" variant="contained" type="submit" sx={{ mt: 2 }}>
                                 {t('submit')}

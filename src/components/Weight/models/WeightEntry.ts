@@ -6,14 +6,19 @@ export class WeightEntry {
         public date: Date,
         public weight: number,
         public id?: number,
+        public notes: string = '',
     ) {
     }
 
-    static clone(other: WeightEntry, overrides?: Partial<Pick<WeightEntry, 'date' | 'weight' | 'id'>>): WeightEntry {
+    static clone(
+        other: WeightEntry,
+        overrides?: Partial<Pick<WeightEntry, 'date' | 'weight' | 'id' | 'notes'>>
+    ): WeightEntry {
         return new WeightEntry(
             overrides?.date ?? other.date,
             overrides?.weight ?? other.weight,
             overrides?.id ?? other.id,
+            overrides?.notes ?? other.notes,
         );
     }
 
@@ -34,6 +39,7 @@ class WeightAdapter implements Adapter<WeightEntry> {
             new Date(item.date),
             parseFloat(item.weight),
             item.id,
+            item.notes ?? '',
         );
     }
 
@@ -41,6 +47,7 @@ class WeightAdapter implements Adapter<WeightEntry> {
         return {
             date: item.date.toISOString(),
             weight: item.weight,
+            notes: item.notes,
         };
     }
 }
