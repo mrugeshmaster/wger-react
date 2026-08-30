@@ -1,0 +1,64 @@
+[
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"count\": 0, \"next\": null, \"previous\": null, \"results\": []}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Token SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/api/v2/ingredient-info/",
+    "QueryParams": {
+      "limit": [
+        "1"
+      ]
+    },
+    "StatusCode": 200,
+    "Port": 8000,
+    "Timestamp": "2026-08-30T17:02:01.445Z",
+    "Scheme": "http",
+    "scenarioName": "ingredient-info-payload-expands-related"
+  },
+  {
+    "Source": "192.168.65.1:39998",
+    "Destination": "localhost",
+    "RequestBody": "",
+    "ResponseBody": "{\"count\": 0, \"next\": null, \"previous\": null, \"results\": []}",
+    "RequestHeaders": {
+      "Content-Type": [
+        "application/json"
+      ],
+      "Authorization": [
+        "Token SKYRAMP_PLACEHOLDER_TOKEN"
+      ]
+    },
+    "ResponseHeaders": {
+      "Content-Type": [
+        "application/json"
+      ]
+    },
+    "Method": "GET",
+    "Path": "/api/v2/ingredient/",
+    "QueryParams": {
+      "limit": [
+        "1"
+      ]
+    },
+    "StatusCode": 200,
+    "Port": 8000,
+    "Timestamp": "2026-08-30T17:02:02.445Z",
+    "Scheme": "http",
+    "scenarioName": "ingredient-info-payload-expands-related"
+  }
+]
