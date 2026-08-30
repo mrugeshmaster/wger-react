@@ -1,6 +1,23 @@
 import { Adapter } from "@/core/lib/Adapter";
 
-export type trophyType = 'time' | 'volume' | 'count' | 'sequence' | 'date' | 'pr' | 'other';
+export type trophyType = 'time' | 'volume' | 'count' | 'sequence' | 'streak' | 'date' | 'pr' | 'other';
+
+/*
+ * Translation keys for the trophy types the API can return
+ *
+ * Every value of trophyType needs an entry here, otherwise the card shows no
+ * category at all for that trophy.
+ */
+export const TROPHY_TYPE_LABEL: Record<trophyType, string> = {
+    time: 'trophies.typeTime',
+    volume: 'trophies.typeVolume',
+    count: 'trophies.typeCount',
+    sequence: 'trophies.typeSequence',
+    streak: 'trophies.typeStreak',
+    date: 'trophies.typeDate',
+    pr: 'trophies.typePr',
+    other: 'trophies.typeOther',
+};
 
 export interface ApiTrophyType {
     id: number,

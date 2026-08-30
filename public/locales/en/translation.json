@@ -33,7 +33,15 @@
     "end": "End",
     "comment": "Comment",
     "trophies": {
-        "trophies": "Trophies"
+        "trophies": "Trophies",
+        "typeTime": "Time",
+        "typeVolume": "Volume",
+        "typeCount": "Count",
+        "typeSequence": "Sequence",
+        "typeStreak": "Streak",
+        "typeDate": "Date",
+        "typePr": "Personal record",
+        "typeOther": "Other"
     },
     "licenses": {
         "authors": "Author(s)",
